@@ -24,8 +24,16 @@ app.get("/", (req, res) => {
   res.send("Hello!");
 });
 
+app.get("/u/:shortURL", (req, res) => {
+  const longURL = urlDatabase[req.params.shortURL];
+  res.redirect(longURL);
+});
+
 app.get('/urls/:shortURL', (req,res) => {
-  let templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase};
+  let templateVars = { 
+  shortURL: req.params.shortURL, 
+  longURL: urlDatabase[req.param.shortURL]
+};
   res.render("urls_show", templateVars);
 });
 
@@ -42,9 +50,11 @@ app.get("/hello", (req, res) => {
   res.send("<html><body>Hello <b>World</b></body></html>\n");
 });
 
-app.post("/urls", (req, res) => {
-  console.log(req.body);  // Log the POST request body to the console
-  res.send("Ok");         // Respond with 'Ok' (we will replace this)
+app.post('/urls', (req,res) => {
+  console.log(req.body); 
+  const shortURL = randomString();
+  urlDatabase[shortURL] = req.body.longURL;
+  res.redirect(`/urls/${shortURL}`);
 });
 
 app.listen(PORT, () => {
