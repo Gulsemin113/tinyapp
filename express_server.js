@@ -32,7 +32,10 @@ app.get("/urls", (req, res) => {
 
 
 app.get("/urls/new", (req, res) => {
-  res.render("urls_new");
+  let varTemplate = {
+    username: req.cookies['username']
+  };
+  res.render("urls_new", varTemplate);
 });
 
 
@@ -99,6 +102,12 @@ app.post('/login', (req,res) => {
 app.post('/logout', (req,res) => {
   res.clearCookie('username');
   res.redirect('/urls');
+});
+
+//The Registration Page Route
+app.get('/register', (req,res) => {
+  let varTemplate = {username : req.cookies['username']};
+  res.render('register', varTemplate);
 });
 
 app.listen(PORT, () => {
