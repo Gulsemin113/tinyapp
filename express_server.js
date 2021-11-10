@@ -17,6 +17,20 @@ const urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
+//Create a users Object
+const users = { 
+  "userRandomID": {
+    id: "userRandomID", 
+    email: "user@example.com", 
+    password: "purple-monkey-dinosaur"
+  },
+ "user2RandomID": {
+    id: "user2RandomID", 
+    email: "user2@example.com", 
+    password: "dishwasher-funk"
+  }
+}
+
 app.get("/", (req, res) => {
   res.send("Hello!");
 });
@@ -107,8 +121,9 @@ app.post('/logout', (req,res) => {
 //The Registration Page Route
 app.get('/register', (req,res) => {
   let varTemplate = {username : req.cookies['username']};
-  res.render('register', varTemplate);
+  res.render('registrationPage', varTemplate);
 });
+
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
