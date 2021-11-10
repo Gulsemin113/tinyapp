@@ -12,22 +12,15 @@
 <body>
   <main style="margin: 1em;">
     <h3>My Login Page</h3>
-    <div class="mb-3 row">
-      <label for="staticEmail" class="col-sm-2 col-form-label">Email</label>
-      <div class="col-sm-10">
-        <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="email@example.com">
+    <form class="form-inline" action="/register" method="POST">
+      <div class="form-group mb-2">          
+          <label for="email" >Email</label>
+          <input class="form-control" placeholder="Please enter an email" name="email" style="width: 350px; margin: 2em">                   
+          <label for="password">Password</label>
+          <input class="form-control" type="password" name="password" placeholder = "Please enter a password" style="width: 350px; margin: 2em">               
+        <button type="submit" class="btn btn-primary">Confirm identity</button>
       </div>
-    </div>
-    <div class="mb-3 row">
-      <label for="inputPassword" class="col-sm-2 col-form-label">Password</label>
-      <div class="col-sm-10">
-        <input type="password" class="form-control" id="inputPassword">
-      </div>
-    </div>
-    <div class="mb-3 row">
-      <button type="submit" class="btn btn-primary mb-3">Confirm identity</button>
-    </div>
-    
+    </form>
   </main>
  
   <!-- Bootstrap JS -->
