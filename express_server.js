@@ -131,15 +131,20 @@ app.get('/register', (req,res) => {
 
 //Create a POST /register endpoint
 app.post('/register', (req, res) => {
-  let userID = randomString();
-  users[userID] = {
+  if(req.body.email === '' || req.body.password === '' || isEmailRegistered(req.body.email)) {
+    res.status(400);
+    res.redirect('/register');
+  } else {
+  let userId = randomString();
+  users[userId] = {
     id: userID,
     email: req.body.email,
     password: req.body.password
   };
   res.cookie('user_id', userID);
   res.redirect('/urls');
-})
+}
+});
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
