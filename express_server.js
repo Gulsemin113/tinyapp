@@ -4,7 +4,7 @@ const PORT = 8080; // default port 8080
 const bodyParser = require("body-parser");
 const cookieParser = require('cookie-parser');
 const bcrypt = require('bcrypt');
-const {urlDatabase,users,randomString,isEmailRegistered, urlsForUser} = require('./methods');
+const {urlDatabase,users,randomString,isEmailRegistered, urlsForUser} =  require('./helpers/helpers');
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.set("view engine", "ejs");
@@ -150,8 +150,8 @@ app.post('/login', (req,res) => {
   
 });
 
-app.get("/urls.json", (req, res) => {
-  res.json(urlDatabase);
+app.get('/users.json', (req,res) => {
+  res.json(users);
 });
 
 app.get("/hello", (req, res) => {
