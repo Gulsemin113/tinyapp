@@ -3,7 +3,7 @@ const app = express();
 const PORT = 8080; // default port 8080
 const bodyParser = require("body-parser");
 const cookieParser = require('cookie-parser');
-
+const bcrypt = require('bcrypt');
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.set("view engine", "ejs");
@@ -30,7 +30,7 @@ app.get("/urls", (req, res) => {
   } else {
     let templateVars = {
       username : users[req.cookies['user_id']],
-      urls :urlsForUser(req.cookies['user_id']) 
+      urls :urlsForUser(req.cookies['user_id'])
     };
     res.render("urls_index", templateVars);
   }
