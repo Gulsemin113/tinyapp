@@ -146,6 +146,12 @@ app.post('/register', (req, res) => {
 }
 });
 
+//Create a GET /login endpoint
+app.get('/login', (req,res) => {
+  let varTemplate = {username: users[req.cookies['user_id']]};
+  res.render('login', varTemplate);
+});
+
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });
