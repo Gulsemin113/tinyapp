@@ -37,17 +37,17 @@ app.get("/", (req, res) => {
 
 app.get("/urls", (req, res) => {
   console.log(req.cookies);
-  let templateVars = {
-    username : req.cookies['username'],
+  let varTemplate = {
+    username: users[req.cookies['user_id']],
     urls : urlDatabase
   };
-  res.render("urls_index", templateVars);
+  res.render('urls_index.ejs',varTemplate);
 });
 
 
 app.get("/urls/new", (req, res) => {
   let varTemplate = {
-    username: req.cookies['username']
+    username: users[req.cookies['user_id']]
   };
   res.render("urls_new", varTemplate);
 });
@@ -55,6 +55,7 @@ app.get("/urls/new", (req, res) => {
 
 app.get('/urls/:shortURL', (req,res) => {
   let templateVars = {
+    username: users[req.cookies['user_id']],
     shortURL: req.params.shortURL,
     longURL: urlDatabase[req.params.shortURL]};
   res.render("urls_show", templateVars);
@@ -68,13 +69,13 @@ app.get("/u/:shortURL", (req, res) => {
 
 app.get('/urls/:shortURL', (req,res) => {
   console.log(req.cookies);
-  let templateVars = {
-    username : req.cookies['username'],
+  let varTemplate = {
+    username: users[req.cookies['user_id']],
     shortURL: req.params.shortURL,
     longURL: urlDatabase[req.param.shortURL]
 
   };
-  res.render("urls_show", templateVars);
+  res.render("urls_show", varTemplate);
 });
 
 app.post("/urls/:shortURL/delete", (req, res) => {
@@ -108,22 +109,37 @@ app.post('/urls', (req,res) => {
 
 //The Login Route
 app.post('/login', (req,res) => {
-  res.cookie('username', req.body.username);
-  res.redirect('/urls');
+  let varTemplate = {
+    username: users[req.cookies['user_id']]
+  };
+  res.render("login", varTemplate);
+  
 });
+
 
 //The Logout Route
 app.post('/logout', (req,res) => {
-  res.clearCookie('username');
+  res.clearCookie('user_id');
   res.redirect('/urls');
 });
 
 //The Registration Page Route
 app.get('/register', (req,res) => {
-  let varTemplate = {username : req.cookies['username']};
+  let varTemplate = {username: users[req.cookies['user_id']]};
   res.render('registrationPage', varTemplate);
 });
 
+//Create a POST /register endpoint
+app.post('/register', (req, res) => {
+  let userID = randomString();
+  users[userID] = {
+    id: userID,
+    email: req.body.email,
+    password: req.body.password
+  };
+  res.cookie('user_id', userID);
+  res.redirect('/urls');
+})
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
