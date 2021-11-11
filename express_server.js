@@ -3,12 +3,22 @@ const app = express();
 const PORT = 8080; // default port 8080
 const bodyParser = require("body-parser");
 const cookieParser = require('cookie-parser');
-const {urlDatabase,users,randomString, urlsForUser,getUserByEmail} = require('./helpers/helpers');
+
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.set("view engine", "ejs");
 app.use(cookieParser());
 
+const urlsForUser = (id) => {
+  let userUrls = {};
+  for (const shortUrl in urlDatabase) {
+    if (urlDatabase[shortUrl].userID === id) {
+      userUrls[shortUrl] = urlDatabase[shortUrl];
+    }
+  }
+  return userUrls;
+
+};
 
 app.get("/", (req, res) => {
   res.send("Hello!");
