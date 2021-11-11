@@ -4,21 +4,12 @@ const PORT = 8080; // default port 8080
 const bodyParser = require("body-parser");
 const cookieParser = require('cookie-parser');
 const bcrypt = require('bcrypt');
+const {urlDatabase,users,randomString,isEmailRegistered, urlsForUser} = require('./methods');
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.set("view engine", "ejs");
 app.use(cookieParser());
 
-const urlsForUser = (id) => {
-  let userUrls = {};
-  for (const shortUrl in urlDatabase) {
-    if (urlDatabase[shortUrl].userID === id) {
-      userUrls[shortUrl] = urlDatabase[shortUrl];
-    }
-  }
-  return userUrls;
-
-};
 
 app.get("/", (req, res) => {
   res.send("Hello!");
@@ -133,7 +124,7 @@ app.post('/register', (req, res) => {
     users[userID] = {
       id: userID,
       email: req.body.email,
-      password: req.body.password
+      password: bcrypt.hashSync(req.body.password,10)
     };
     res.cookie('user_id', userID);
     res.redirect('/urls');
