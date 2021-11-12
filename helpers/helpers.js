@@ -5,7 +5,6 @@ const urlDatabase = {
   i3BoGr: { longURL: 'https://www.google.ca', userID: 'aJ48lW' }
 };
 
-//Create a users Object
 const users = {
   'userRandomID': {
     id: 'userRandomID',
@@ -20,7 +19,7 @@ const users = {
 };
 
 
-// Generates random string.
+// Produces a random string.
 const randomString = () => {
   let random = Math.random().toString(36).substring(2,8);
   return random;
@@ -28,7 +27,8 @@ const randomString = () => {
 
 
 
-// Checks if there is an email that is same as users email.
+/* Checks if there is an email address that
+ is the same as the user's.*/
 const isEmailRegistered = (email) => {
   for (const user in users) {
     if (users[user].email === email) {
@@ -39,8 +39,8 @@ const isEmailRegistered = (email) => {
 };
 
 /*
-If the database user's id match, then the urls for the
-user is matched as well.
+If the database user's id matches, 
+the user's urls are also matched..
 */
 const urlsForUser = (id) => {
   let userUrls = {};
@@ -52,9 +52,10 @@ const urlsForUser = (id) => {
   return userUrls;
 
 };
+
 /*
-Checks whether the email in the database is the same as the user's email
-that we are searching for.
+Checks whether the email in the database matches 
+the email of the user we're looking for.
 */
 const getUserByEmail = function(email, database) {
   for (const user in database) {
