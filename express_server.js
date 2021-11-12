@@ -17,33 +17,36 @@ app.use(cookieSession({
   maxAge: 24 * 60 * 60 * 1000 // 24 hours
 }))
 
-
-app.get("/", (req, res) => {
-  res.send("Hello!");
+app.get('/', (req,res) => {
+  if(!req.session['user_id']) {
+    res.redirect('/login');
+  } else {
+    res.redirect('/urls');
+  }
 });
 
-app.get("/urls", (req, res) => {
-  if (!req.cookies['user_id']) {
+app.get('/urls/new', (req,res) => {
+  if (!req.session['user_id']) {
     res.redirect('/login');
   } else {
     let templateVars = {
-      username : users[req.cookies['user_id']],
-      urls :urlsForUser(req.cookies['user_id'])
+      username : users[req.session['user_id']]
     };
-    res.render("urls_index", templateVars);
+    res.render("urls_new", templateVars);
   }
   
 });
 
 
-app.get("/urls/new", (req, res) => {
-  if (!req.cookies['user_id']) {
+app.get('/urls', (req,res) => {
+  if (!req.session['user_id']) {
     res.redirect('/login');
   } else {
     let templateVars = {
-      username: users[req.cookies['user_id']]
+      username: users[req.session['user_id']],
+      urls :urlsForUser(req.session['user_id'])
     };
-    res.render("urls_new", templateVars);
+    res.render("urls_index", templateVars);
   }
 });
 
@@ -56,7 +59,7 @@ app.get('/urls/:shortURL', (req,res) => {
   res.render("urls_show", templateVars);
 });
 
-app.get("/urls/:shortURL", (req, res) => {
+app.get("/u/:shortURL", (req, res) => {
   const longURL = urlDatabase[req.params.shortURL].longURL;
   res.redirect(longURL);
 });
@@ -65,7 +68,7 @@ app.get("/urls/:shortURL", (req, res) => {
 app.get('/urls/:shortURL', (req,res) => {
   
   let templateVars = {
-    username: users[req.cookies['user_id']],
+    username: users[req.session['user_id']],
     shortURL: req.params.shortURL,
     longURL: urlDatabase[req.param.shortURL]
 
@@ -75,19 +78,19 @@ app.get('/urls/:shortURL', (req,res) => {
 
 //GET Login route
 app.get('/login', (req,res) => {
-  let templateVars = { username : users[req.cookies['user_id']] };
+  let templateVars = { username : users[req.session['user_id']] };
   res.render('login', templateVars);
 });
 
 //The Logout Route
 app.post('/logout', (req,res) => {
-  res.clearCookie('user_id');
+  req.session = null;
   res.redirect('/urls');
 });
 
 app.post("/urls/:shortURL/delete", (req, res) => {
   delete urlDatabase[req.params.shortURL];
-  if (urlDatabase[req.params.shortURL].userID === req.cookies['user_id']) {
+  if (urlDatabase[req.params.shortURL].userID === req.session['user_id']) {
     delete urlDatabase[req.params.shortURL];
   }
   res.redirect('/urls');
@@ -98,7 +101,7 @@ app.post("/urls/:shortURL/edit", (req, res) => {
 });
 
 app.post("/urls/:shortURL/update", (req, res) => {
-  if (urlDatabase[req.params.shortURL].userID === req.cookies['user_id']) {
+  if (urlDatabase[req.params.shortURL].userID === req.session['user_id']) {
     urlDatabase[req.params.shortURL].longURL = req.body.longURL;
   }
   res.redirect('/urls');
@@ -108,7 +111,7 @@ app.post("/urls/:shortURL/update", (req, res) => {
 app.post('/urls', (req,res) => {
   const shortURL = randomString();
   urlDatabase[shortURL] = {
-    userID : req.cookies['user_id'],
+    userID : req.session['user_id'],
     longURL: req.body.longURL
   };
   res.redirect(`/urls/${shortURL}`);
@@ -117,8 +120,15 @@ app.post('/urls', (req,res) => {
 
 //The Registration Page Route
 app.get('/register', (req,res) => {
-  let templateVars = {username: users[req.cookies['user_id']]};
-  res.render('registrationPage', templateVars);
+  if(req.session['user_id']) {
+    res.redirect('/urls');
+  } else {
+    let templateVars = {
+      user: users[req.session['user_id']]
+    };
+    res.render('registrationPage', templateVars);
+  }
+  
 });
 
 //Create a POST /register endpoint
@@ -133,7 +143,7 @@ app.post('/register', (req, res) => {
       email: req.body.email,
       password: bcrypt.hashSync(req.body.password,10)
     };
-    res.cookie('user_id', userID);
+    req.session['user_id'] = userID;
     res.redirect('/urls');
   }
 });
@@ -161,9 +171,7 @@ app.get('/users.json', (req,res) => {
   res.json(users);
 });
 
-app.get("/hello", (req, res) => {
-  res.send("<html><body>Hello <b>World</b></body></html>\n");
-});
+
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });
