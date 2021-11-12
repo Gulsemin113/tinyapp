@@ -28,7 +28,6 @@ app.get('/', (req,res) => {
   }
 });
 
-//If you're logged in, you'll see the urls that the user made.
 app.get('/urls', (req,res) => {
   const templateVars = {
     user: users[req.session['user_id']],
